@@ -1,0 +1,4 @@
+- this is a 'uv' project
+- use pytest for the tests 
+- use mypy and ruff for linting, formatting, and type checking
+- use red/green test driven development
