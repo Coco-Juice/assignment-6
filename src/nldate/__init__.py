@@ -205,6 +205,14 @@ def parse(s: str, today: date | None = None) -> date:
         parts = re.findall(_NUM_PAT + r"\s+(days?|weeks?|months?|years?)", raw_deltas)
         if len(parts) >= 2:
             d = _parse_absolute(base_str)
+            if d is None:
+                base_lower = base_str.strip().lower()
+                if base_lower == "today":
+                    d = today
+                elif base_lower == "tomorrow":
+                    d = today + timedelta(days=1)
+                elif base_lower == "yesterday":
+                    d = today - timedelta(days=1)
             if d:
                 direction = m.group(1)
                 for num_str, unit in parts:
