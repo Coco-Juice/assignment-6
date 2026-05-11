@@ -37,6 +37,28 @@ MONTHS = {
     "dec": 12,
 }
 
+NUMBER_WORDS = {
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+}
+
+_NUM_PAT = r"(\d+|one|two|three|four|five|six|seven|eight|nine|ten)"
+
+
+def _to_int(s: str) -> int:
+    try:
+        return int(s)
+    except ValueError:
+        return NUMBER_WORDS[s]
+
 
 def _parse_absolute(s: str) -> date | None:
     m = re.match(r"(\d{4})-(\d{1,2})-(\d{1,2})$", s)
@@ -83,39 +105,39 @@ def parse(s: str, today: date | None = None) -> date:
     if s == "yesterday":
         return today + timedelta(days=-1)
 
-    m = re.search(r"in\s+(\d+)\s+days?$", s)
+    m = re.search(r"in\s+" + _NUM_PAT + r"\s+days?$", s)
     if m:
-        return today + timedelta(days=int(m.group(1)))
+        return today + timedelta(days=_to_int(m.group(1)))
 
-    m = re.search(r"in\s+(\d+)\s+weeks?$", s)
+    m = re.search(r"in\s+" + _NUM_PAT + r"\s+weeks?$", s)
     if m:
-        return today + timedelta(weeks=int(m.group(1)))
+        return today + timedelta(weeks=_to_int(m.group(1)))
 
-    m = re.search(r"in\s+(\d+)\s+months?$", s)
+    m = re.search(r"in\s+" + _NUM_PAT + r"\s+months?$", s)
     if m:
-        n = int(m.group(1))
+        n = _to_int(m.group(1))
         total = today.month - 1 + n
         return date(today.year + total // 12, total % 12 + 1, today.day)
 
-    m = re.search(r"in\s+(\d+)\s+years?$", s)
+    m = re.search(r"in\s+" + _NUM_PAT + r"\s+years?$", s)
     if m:
-        return date(today.year + int(m.group(1)), today.month, today.day)
+        return date(today.year + _to_int(m.group(1)), today.month, today.day)
 
-    m = re.search(r"(\d+)\s+days?\s+ago$", s)
+    m = re.search(_NUM_PAT + r"\s+days?\s+ago$", s)
     if m:
-        return today - timedelta(days=int(m.group(1)))
+        return today - timedelta(days=_to_int(m.group(1)))
 
-    m = re.search(r"(\d+)\s+weeks?\s+ago$", s)
+    m = re.search(_NUM_PAT + r"\s+weeks?\s+ago$", s)
     if m:
-        return today - timedelta(weeks=int(m.group(1)))
+        return today - timedelta(weeks=_to_int(m.group(1)))
 
     m = re.search(r"a\s+week\s+ago$", s)
     if m:
         return today - timedelta(weeks=1)
 
-    m = re.search(r"(\d+)\s+months?\s+ago$", s)
+    m = re.search(_NUM_PAT + r"\s+months?\s+ago$", s)
     if m:
-        n = int(m.group(1))
+        n = _to_int(m.group(1))
         total = today.month - 1 - n
         return date(today.year + total // 12, total % 12 + 1, today.day)
 
@@ -124,24 +146,24 @@ def parse(s: str, today: date | None = None) -> date:
         total = today.month - 2
         return date(today.year + total // 12, total % 12 + 1, today.day)
 
-    m = re.search(r"(\d+)\s+years?\s+ago$", s)
+    m = re.search(_NUM_PAT + r"\s+years?\s+ago$", s)
     if m:
-        return date(today.year - int(m.group(1)), today.month, today.day)
+        return date(today.year - _to_int(m.group(1)), today.month, today.day)
 
     m = re.search(r"a\s+year\s+ago$", s)
     if m:
         return date(today.year - 1, today.month, today.day)
 
-    m = re.search(r"(\d+)\s+days?\s+before\s+(.+)$", s)
+    m = re.search(_NUM_PAT + r"\s+days?\s+before\s+(.+)$", s)
     if m:
-        n = int(m.group(1))
+        n = _to_int(m.group(1))
         d = _parse_absolute(m.group(2).strip())
         if d:
             return d - timedelta(days=n)
 
-    m = re.search(r"(\d+)\s+days?\s+after\s+(.+)$", s)
+    m = re.search(_NUM_PAT + r"\s+days?\s+after\s+(.+)$", s)
     if m:
-        n = int(m.group(1))
+        n = _to_int(m.group(1))
         d = _parse_absolute(m.group(2).strip())
         if d:
             return d + timedelta(days=n)
@@ -151,9 +173,9 @@ def parse(s: str, today: date | None = None) -> date:
     if s == "last week":
         return today + timedelta(days=-7)
 
-    m = re.search(r"(\d+)\s+weeks?\s+from\s+today$", s)
+    m = re.search(_NUM_PAT + r"\s+weeks?\s+from\s+today$", s)
     if m:
-        return today + timedelta(weeks=int(m.group(1)))
+        return today + timedelta(weeks=_to_int(m.group(1)))
 
     m = re.search(r"next\s+([A-Za-z]+)$", s)
     if m:
