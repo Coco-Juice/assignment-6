@@ -201,3 +201,18 @@ class TestParse:
 
     def test_number_words_compound_before(self):
         assert parse("two years, three months before Dec 1, 2025") == date(2023, 9, 1)
+
+    def test_and_separator_with_yesterday(self):
+        assert parse(
+            "1 year and 2 months after yesterday", today=date(2025, 12, 1)
+        ) == date(2027, 1, 30)
+
+    def test_and_separator_with_tomorrow(self):
+        assert parse(
+            "2 years and 3 months before tomorrow", today=date(2025, 12, 1)
+        ) == date(2023, 9, 2)
+
+    def test_comma_and_mixed_separator(self):
+        assert parse("1 year, 2 months and 3 days before Dec 1, 2025") == date(
+            2024, 9, 28
+        )
