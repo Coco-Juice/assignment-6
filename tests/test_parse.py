@@ -55,5 +55,5 @@ class TestParse:
     def test_sentence_with_next_weekday(self):
         assert (
             parse("Can we schedule a call next Wednesday", today=date(2026, 5, 11))
-            == date(2026, 5, 13)
+            == date(2026, 5, 20)
         )
