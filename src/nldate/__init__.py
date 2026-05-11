@@ -101,7 +101,7 @@ def parse(s: str, today: date | None = None) -> date:
     if today is None:
         today = date.today()
 
-    s = s.strip()
+    s = s.strip().lower()
 
     abs_date = _parse_absolute(s)
     if abs_date:
