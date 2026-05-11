@@ -154,3 +154,23 @@ class TestParse:
         assert parse("That is two years from now", today=date(2025, 6, 15)) == date(
             2027, 6, 15
         )
+
+    def test_sentence_with_a_day_from_now(self):
+        assert parse("That is a day from now", today=date(2025, 6, 15)) == date(
+            2025, 6, 16
+        )
+
+    def test_sentence_with_a_week_from_now(self):
+        assert parse("That is a week from now", today=date(2025, 6, 15)) == date(
+            2025, 6, 22
+        )
+
+    def test_sentence_with_a_month_from_now(self):
+        assert parse("That is a month from now", today=date(2025, 6, 15)) == date(
+            2025, 7, 15
+        )
+
+    def test_sentence_with_a_year_from_now(self):
+        assert parse("That is a year from now", today=date(2025, 6, 15)) == date(
+            2026, 6, 15
+        )

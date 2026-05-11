@@ -141,6 +141,23 @@ def parse(s: str, today: date | None = None) -> date:
     if m:
         return date(today.year + _to_int(m.group(1)), today.month, today.day)
 
+    m = re.search(r"a\s+day\s+from\s+now$", s)
+    if m:
+        return today + timedelta(days=1)
+
+    m = re.search(r"a\s+week\s+from\s+now$", s)
+    if m:
+        return today + timedelta(weeks=1)
+
+    m = re.search(r"a\s+month\s+from\s+now$", s)
+    if m:
+        total = today.month
+        return date(today.year + total // 12, total % 12 + 1, today.day)
+
+    m = re.search(r"a\s+year\s+from\s+now$", s)
+    if m:
+        return date(today.year + 1, today.month, today.day)
+
     m = re.search(_NUM_PAT + r"\s+days?\s+ago$", s)
     if m:
         return today - timedelta(days=_to_int(m.group(1)))
