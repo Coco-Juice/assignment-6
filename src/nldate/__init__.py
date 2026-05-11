@@ -51,7 +51,7 @@ def _parse_absolute(s: str) -> date | None:
     if m:
         return date(int(m.group(3)), int(m.group(1)), int(m.group(2)))
 
-    m = re.match(r"([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})$", s)
+    m = re.match(r"([A-Za-z]+)\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})$", s)
     if m:
         month = MONTHS[m.group(1).lower()]
         day = int(m.group(2))
@@ -112,7 +112,7 @@ def parse(s: str, today: date | None = None) -> date:
         if day_name in WEEKDAYS:
             return _next_weekday(today, WEEKDAYS[day_name])
 
-    m = re.search(r"([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})", s)
+    m = re.search(r"([A-Za-z]+)\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})", s)
     if m:
         month = MONTHS.get(m.group(1).lower())
         if month:
