@@ -97,6 +97,10 @@ def parse(s: str, today: date | None = None) -> date:
         total = today.month - 1 + n
         return date(today.year + total // 12, total % 12 + 1, today.day)
 
+    m = re.search(r"in\s+(\d+)\s+years?$", s)
+    if m:
+        return date(today.year + int(m.group(1)), today.month, today.day)
+
     m = re.search(r"(\d+)\s+days?\s+before\s+(.+)$", s)
     if m:
         n = int(m.group(1))
