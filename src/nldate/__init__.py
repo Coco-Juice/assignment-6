@@ -90,6 +90,13 @@ def _next_weekday(from_date: date, target_weekday: int) -> date:
     return from_date + timedelta(days=days_ahead)
 
 
+def _prev_weekday(from_date: date, target_weekday: int) -> date:
+    days_behind = from_date.weekday() - target_weekday
+    if days_behind <= 0:
+        days_behind += 7
+    return from_date - timedelta(days=days_behind)
+
+
 def parse(s: str, today: date | None = None) -> date:
     if today is None:
         today = date.today()
@@ -219,6 +226,12 @@ def parse(s: str, today: date | None = None) -> date:
         day_name = m.group(1).lower()
         if day_name in WEEKDAYS:
             return _next_weekday(today, WEEKDAYS[day_name])
+
+    m = re.search(r"last\s+([A-Za-z]+)$", s)
+    if m:
+        day_name = m.group(1).lower()
+        if day_name in WEEKDAYS:
+            return _prev_weekday(today, WEEKDAYS[day_name])
 
     m = re.search(r"([A-Za-z]+)\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})", s)
     if m:
