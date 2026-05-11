@@ -174,3 +174,6 @@ class TestParse:
         assert parse("That is a year from now", today=date(2025, 6, 15)) == date(
             2026, 6, 15
         )
+
+    def test_sentence_with_last_friday(self):
+        assert parse("We met last Friday", today=date(2026, 5, 11)) == date(2026, 5, 8)
