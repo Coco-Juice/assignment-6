@@ -56,14 +56,14 @@ def parse(s: str, today: date | None = None) -> date:
     if s == "yesterday":
         return today + timedelta(days=-1)
 
-    m = re.match(r"(\d+)\s+days?\s+before\s+(.+)$", s)
+    m = re.search(r"(\d+)\s+days?\s+before\s+(.+)$", s)
     if m:
         n = int(m.group(1))
         d = _parse_absolute(m.group(2).strip())
         if d:
             return d - timedelta(days=n)
 
-    m = re.match(r"(\d+)\s+days?\s+after\s+(.+)$", s)
+    m = re.search(r"(\d+)\s+days?\s+after\s+(.+)$", s)
     if m:
         n = int(m.group(1))
         d = _parse_absolute(m.group(2).strip())
@@ -75,14 +75,20 @@ def parse(s: str, today: date | None = None) -> date:
     if s == "last week":
         return today + timedelta(days=-7)
 
-    m = re.match(r"(\d+)\s+weeks?\s+from\s+today$", s)
+    m = re.search(r"(\d+)\s+weeks?\s+from\s+today$", s)
     if m:
         return today + timedelta(weeks=int(m.group(1)))
 
-    m = re.match(r"next\s+([A-Za-z]+)$", s)
+    m = re.search(r"next\s+([A-Za-z]+)$", s)
     if m:
         day_name = m.group(1).lower()
         if day_name in WEEKDAYS:
             return _next_weekday(today, WEEKDAYS[day_name])
+
+    m = re.search(r"([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(\d{4})", s)
+    if m:
+        month = MONTHS.get(m.group(1).lower())
+        if month:
+            return date(int(m.group(3)), month, int(m.group(2)))
 
     raise ValueError(f"Unable to parse date: {s!r}")
