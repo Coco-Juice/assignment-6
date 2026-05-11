@@ -83,6 +83,10 @@ def parse(s: str, today: date | None = None) -> date:
     if s == "yesterday":
         return today + timedelta(days=-1)
 
+    m = re.search(r"in\s+(\d+)\s+days?$", s)
+    if m:
+        return today + timedelta(days=int(m.group(1)))
+
     m = re.search(r"(\d+)\s+days?\s+before\s+(.+)$", s)
     if m:
         n = int(m.group(1))
