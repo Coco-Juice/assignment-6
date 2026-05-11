@@ -47,7 +47,7 @@ class TestParse:
         assert parse("2 weeks from today", today=date(2025, 6, 15)) == date(2025, 6, 29)
 
     def test_next_tuesday(self):
-        assert parse("next Tuesday", today=date(2025, 12, 1)) == date(2025, 12, 9)
+        assert parse("next Tuesday", today=date(2025, 12, 1)) == date(2025, 12, 2)
 
     def test_sentence_with_absolute_date(self):
         assert parse("I have a meeting on December 1st, 2025") == date(2025, 12, 1)
@@ -60,7 +60,7 @@ class TestParse:
     def test_sentence_with_next_weekday(self):
         assert parse(
             "Can we schedule a call next Wednesday", today=date(2026, 5, 11)
-        ) == date(2026, 5, 20)
+        ) == date(2026, 5, 13)
 
     def test_sentence_with_in_days(self):
         assert parse("Remind me in 5 days", today=date(2025, 6, 15)) == date(

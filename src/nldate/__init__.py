@@ -84,7 +84,9 @@ def _parse_absolute(s: str) -> date | None:
 
 
 def _next_weekday(from_date: date, target_weekday: int) -> date:
-    days_ahead = 7 + target_weekday - from_date.weekday()
+    days_ahead = target_weekday - from_date.weekday()
+    if days_ahead <= 0:
+        days_ahead += 7
     return from_date + timedelta(days=days_ahead)
 
 
