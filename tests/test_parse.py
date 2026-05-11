@@ -76,3 +76,8 @@ class TestParse:
         assert parse("Remind me in 3 months", today=date(2025, 6, 15)) == date(
             2025, 9, 15
         )
+
+    def test_sentence_with_in_year(self):
+        assert parse("Remind me in 1 year", today=date(2025, 6, 15)) == date(
+            2026, 6, 15
+        )
