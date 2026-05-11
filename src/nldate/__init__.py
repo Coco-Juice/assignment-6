@@ -105,6 +105,20 @@ def parse(s: str, today: date | None = None) -> date:
     if m:
         return today - timedelta(days=int(m.group(1)))
 
+    m = re.search(r"(\d+)\s+weeks?\s+ago$", s)
+    if m:
+        return today - timedelta(weeks=int(m.group(1)))
+
+    m = re.search(r"(\d+)\s+months?\s+ago$", s)
+    if m:
+        n = int(m.group(1))
+        total = today.month - 1 - n
+        return date(today.year + total // 12, total % 12 + 1, today.day)
+
+    m = re.search(r"(\d+)\s+years?\s+ago$", s)
+    if m:
+        return date(today.year - int(m.group(1)), today.month, today.day)
+
     m = re.search(r"(\d+)\s+days?\s+before\s+(.+)$", s)
     if m:
         n = int(m.group(1))

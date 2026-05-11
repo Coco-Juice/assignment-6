@@ -86,3 +86,18 @@ class TestParse:
         assert parse("I did that 3 days ago", today=date(2025, 6, 15)) == date(
             2025, 6, 12
         )
+
+    def test_sentence_with_weeks_ago(self):
+        assert parse("That was 2 weeks ago", today=date(2025, 6, 15)) == date(
+            2025, 6, 1
+        )
+
+    def test_sentence_with_months_ago(self):
+        assert parse("That was 3 months ago", today=date(2025, 6, 15)) == date(
+            2025, 3, 15
+        )
+
+    def test_sentence_with_years_ago(self):
+        assert parse("That was 1 year ago", today=date(2025, 6, 15)) == date(
+            2024, 6, 15
+        )
