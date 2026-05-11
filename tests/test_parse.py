@@ -221,3 +221,13 @@ class TestParse:
         assert parse("2 days after tomorrow", today=date(2025, 12, 1)) == date(
             2025, 12, 4
         )
+
+    def test_the_day_after_tomorrow(self):
+        assert parse("the day after tomorrow", today=date(2025, 12, 1)) == date(
+            2025, 12, 3
+        )
+
+    def test_the_day_before_yesterday(self):
+        assert parse("the day before yesterday", today=date(2025, 12, 1)) == date(
+            2025, 11, 29
+        )
