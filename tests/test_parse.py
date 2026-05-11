@@ -13,6 +13,9 @@ class TestParse:
     def test_absolute_date_us_format(self):
         assert parse("12/01/2025") == date(2025, 12, 1)
 
+    def test_absolute_date_slash_format(self):
+        assert parse("2025/12/01") == date(2025, 12, 1)
+
     def test_today(self):
         assert parse("today", today=date(2025, 6, 15)) == date(2025, 6, 15)
 
