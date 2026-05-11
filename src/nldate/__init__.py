@@ -198,6 +198,33 @@ def parse(s: str, today: date | None = None) -> date:
     if m:
         return date(today.year - 1, today.month, today.day)
 
+    m = re.search(r"\b(before|after)\b", s)
+    if m:
+        raw_deltas = s[: m.start()].strip()
+        base_str = s[m.end() :].strip()
+        parts = re.findall(_NUM_PAT + r"\s+(days?|weeks?|months?|years?)", raw_deltas)
+        if len(parts) >= 2:
+            d = _parse_absolute(base_str)
+            if d:
+                direction = m.group(1)
+                for num_str, unit in parts:
+                    n = _to_int(num_str)
+                    if unit.startswith("day"):
+                        delta = timedelta(days=n)
+                    elif unit.startswith("week"):
+                        delta = timedelta(weeks=n)
+                    elif unit.startswith("month"):
+                        total = d.month - 1 + (n if direction == "after" else -n)
+                        d = date(d.year + total // 12, total % 12 + 1, d.day)
+                        continue
+                    elif unit.startswith("year"):
+                        d = date(
+                            d.year + (n if direction == "after" else -n), d.month, d.day
+                        )
+                        continue
+                    d = d + delta if direction == "after" else d - delta
+                return d
+
     m = re.search(_NUM_PAT + r"\s+days?\s+before\s+(.+)$", s)
     if m:
         n = _to_int(m.group(1))

@@ -186,3 +186,18 @@ class TestParse:
 
     def test_weeks_after_us_date(self):
         assert parse("2 weeks after 12/04/2025") == date(2025, 12, 18)
+
+    def test_years_and_months_before(self):
+        assert parse("2 years, 3 months before Dec 1, 2025") == date(2023, 9, 1)
+
+    def test_years_and_months_after(self):
+        assert parse("2 years, 3 months after Dec 1, 2025") == date(2028, 3, 1)
+
+    def test_days_and_weeks_before(self):
+        assert parse("5 days, 2 weeks before Dec 1, 2025") == date(2025, 11, 12)
+
+    def test_days_and_weeks_after(self):
+        assert parse("5 days, 2 weeks after Dec 1, 2025") == date(2025, 12, 20)
+
+    def test_number_words_compound_before(self):
+        assert parse("two years, three months before Dec 1, 2025") == date(2023, 9, 1)
