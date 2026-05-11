@@ -226,6 +226,36 @@ def parse(s: str, today: date | None = None) -> date:
         if d:
             return d + timedelta(weeks=n)
 
+    m = re.search(_NUM_PAT + r"\s+months?\s+before\s+(.+)$", s)
+    if m:
+        n = _to_int(m.group(1))
+        d = _parse_absolute(m.group(2).strip())
+        if d:
+            total = d.month - 1 - n
+            return date(d.year + total // 12, total % 12 + 1, d.day)
+
+    m = re.search(_NUM_PAT + r"\s+months?\s+after\s+(.+)$", s)
+    if m:
+        n = _to_int(m.group(1))
+        d = _parse_absolute(m.group(2).strip())
+        if d:
+            total = d.month - 1 + n
+            return date(d.year + total // 12, total % 12 + 1, d.day)
+
+    m = re.search(_NUM_PAT + r"\s+years?\s+before\s+(.+)$", s)
+    if m:
+        n = _to_int(m.group(1))
+        d = _parse_absolute(m.group(2).strip())
+        if d:
+            return date(d.year - n, d.month, d.day)
+
+    m = re.search(_NUM_PAT + r"\s+years?\s+after\s+(.+)$", s)
+    if m:
+        n = _to_int(m.group(1))
+        d = _parse_absolute(m.group(2).strip())
+        if d:
+            return date(d.year + n, d.month, d.day)
+
     if s == "next week":
         return today + timedelta(days=7)
     if s == "last week":
