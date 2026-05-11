@@ -212,6 +212,20 @@ def parse(s: str, today: date | None = None) -> date:
         if d:
             return d + timedelta(days=n)
 
+    m = re.search(_NUM_PAT + r"\s+weeks?\s+before\s+(.+)$", s)
+    if m:
+        n = _to_int(m.group(1))
+        d = _parse_absolute(m.group(2).strip())
+        if d:
+            return d - timedelta(weeks=n)
+
+    m = re.search(_NUM_PAT + r"\s+weeks?\s+after\s+(.+)$", s)
+    if m:
+        n = _to_int(m.group(1))
+        d = _parse_absolute(m.group(2).strip())
+        if d:
+            return d + timedelta(weeks=n)
+
     if s == "next week":
         return today + timedelta(days=7)
     if s == "last week":

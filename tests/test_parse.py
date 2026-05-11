@@ -177,3 +177,12 @@ class TestParse:
 
     def test_sentence_with_last_friday(self):
         assert parse("We met last Friday", today=date(2026, 5, 11)) == date(2026, 5, 8)
+
+    def test_weeks_after_iso_date(self):
+        assert parse("2 weeks after 2025-12-04") == date(2025, 12, 18)
+
+    def test_weeks_after_slash_date(self):
+        assert parse("2 weeks after 2025/12/04") == date(2025, 12, 18)
+
+    def test_weeks_after_us_date(self):
+        assert parse("2 weeks after 12/04/2025") == date(2025, 12, 18)
