@@ -7,6 +7,9 @@ class TestParse:
     def test_absolute_date_with_month_name(self):
         assert parse("December 1st, 2025") == date(2025, 12, 1)
 
+    def test_absolute_date_with_abbreviated_month(self):
+        assert parse("Dec 1, 2025") == date(2025, 12, 1)
+
     def test_absolute_date_iso_format(self):
         assert parse("2025-12-01") == date(2025, 12, 1)
 
