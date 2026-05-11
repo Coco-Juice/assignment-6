@@ -123,6 +123,24 @@ def parse(s: str, today: date | None = None) -> date:
     if m:
         return date(today.year + _to_int(m.group(1)), today.month, today.day)
 
+    m = re.search(_NUM_PAT + r"\s+days?\s+from\s+now$", s)
+    if m:
+        return today + timedelta(days=_to_int(m.group(1)))
+
+    m = re.search(_NUM_PAT + r"\s+weeks?\s+from\s+now$", s)
+    if m:
+        return today + timedelta(weeks=_to_int(m.group(1)))
+
+    m = re.search(_NUM_PAT + r"\s+months?\s+from\s+now$", s)
+    if m:
+        n = _to_int(m.group(1))
+        total = today.month - 1 + n
+        return date(today.year + total // 12, total % 12 + 1, today.day)
+
+    m = re.search(_NUM_PAT + r"\s+years?\s+from\s+now$", s)
+    if m:
+        return date(today.year + _to_int(m.group(1)), today.month, today.day)
+
     m = re.search(_NUM_PAT + r"\s+days?\s+ago$", s)
     if m:
         return today - timedelta(days=_to_int(m.group(1)))
