@@ -83,6 +83,17 @@ def _parse_absolute(s: str) -> date | None:
     return None
 
 
+def _parse_base(s: str, today: date) -> date | None:
+    s = s.strip().lower()
+    if s == "today":
+        return today
+    if s == "tomorrow":
+        return today + timedelta(days=1)
+    if s == "yesterday":
+        return today - timedelta(days=1)
+    return _parse_absolute(s)
+
+
 def _next_weekday(from_date: date, target_weekday: int) -> date:
     days_ahead = target_weekday - from_date.weekday()
     if days_ahead <= 0:
@@ -204,15 +215,7 @@ def parse(s: str, today: date | None = None) -> date:
         base_str = s[m.end() :].strip()
         parts = re.findall(_NUM_PAT + r"\s+(days?|weeks?|months?|years?)", raw_deltas)
         if len(parts) >= 2:
-            d = _parse_absolute(base_str)
-            if d is None:
-                base_lower = base_str.strip().lower()
-                if base_lower == "today":
-                    d = today
-                elif base_lower == "tomorrow":
-                    d = today + timedelta(days=1)
-                elif base_lower == "yesterday":
-                    d = today - timedelta(days=1)
+            d = _parse_base(base_str, today)
             if d:
                 direction = m.group(1)
                 for num_str, unit in parts:
@@ -236,35 +239,35 @@ def parse(s: str, today: date | None = None) -> date:
     m = re.search(_NUM_PAT + r"\s+days?\s+before\s+(.+)$", s)
     if m:
         n = _to_int(m.group(1))
-        d = _parse_absolute(m.group(2).strip())
+        d = _parse_base(m.group(2), today)
         if d:
             return d - timedelta(days=n)
 
     m = re.search(_NUM_PAT + r"\s+days?\s+after\s+(.+)$", s)
     if m:
         n = _to_int(m.group(1))
-        d = _parse_absolute(m.group(2).strip())
+        d = _parse_base(m.group(2), today)
         if d:
             return d + timedelta(days=n)
 
     m = re.search(_NUM_PAT + r"\s+weeks?\s+before\s+(.+)$", s)
     if m:
         n = _to_int(m.group(1))
-        d = _parse_absolute(m.group(2).strip())
+        d = _parse_base(m.group(2), today)
         if d:
             return d - timedelta(weeks=n)
 
     m = re.search(_NUM_PAT + r"\s+weeks?\s+after\s+(.+)$", s)
     if m:
         n = _to_int(m.group(1))
-        d = _parse_absolute(m.group(2).strip())
+        d = _parse_base(m.group(2), today)
         if d:
             return d + timedelta(weeks=n)
 
     m = re.search(_NUM_PAT + r"\s+months?\s+before\s+(.+)$", s)
     if m:
         n = _to_int(m.group(1))
-        d = _parse_absolute(m.group(2).strip())
+        d = _parse_base(m.group(2), today)
         if d:
             total = d.month - 1 - n
             return date(d.year + total // 12, total % 12 + 1, d.day)
@@ -272,7 +275,7 @@ def parse(s: str, today: date | None = None) -> date:
     m = re.search(_NUM_PAT + r"\s+months?\s+after\s+(.+)$", s)
     if m:
         n = _to_int(m.group(1))
-        d = _parse_absolute(m.group(2).strip())
+        d = _parse_base(m.group(2), today)
         if d:
             total = d.month - 1 + n
             return date(d.year + total // 12, total % 12 + 1, d.day)
@@ -280,14 +283,14 @@ def parse(s: str, today: date | None = None) -> date:
     m = re.search(_NUM_PAT + r"\s+years?\s+before\s+(.+)$", s)
     if m:
         n = _to_int(m.group(1))
-        d = _parse_absolute(m.group(2).strip())
+        d = _parse_base(m.group(2), today)
         if d:
             return date(d.year - n, d.month, d.day)
 
     m = re.search(_NUM_PAT + r"\s+years?\s+after\s+(.+)$", s)
     if m:
         n = _to_int(m.group(1))
-        d = _parse_absolute(m.group(2).strip())
+        d = _parse_base(m.group(2), today)
         if d:
             return date(d.year + n, d.month, d.day)
 

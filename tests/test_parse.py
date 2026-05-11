@@ -216,3 +216,8 @@ class TestParse:
         assert parse("1 year, 2 months and 3 days before Dec 1, 2025") == date(
             2024, 9, 28
         )
+
+    def test_days_after_tomorrow(self):
+        assert parse("2 days after tomorrow", today=date(2025, 12, 1)) == date(
+            2025, 12, 4
+        )
